@@ -10,11 +10,8 @@ require 'dp.php';
         $sub_office_list .= "<option value=\"{$row['sub_office_id']}\"> {$row['sub_office_name']}</option>";
              
     }; */
-
     
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
