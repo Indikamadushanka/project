@@ -103,7 +103,7 @@ require 'dp.php';
                         
                     </div>
                     <lable for="fileupload" class="form-label"><b>Profile Picture</b></lable>
-            <input type="file" name="fileupload" id="fileupload"><br>
+                    <input type="file" class="form-control" id="file" name="profile" ><br>
 
                     <input class="btn btn-primary mt-3" id="submit" type="submit" name="submit" value="Submit">
 
@@ -143,8 +143,6 @@ require 'dp.php';
 			</div>
  -->
 
-
-
 <script>
 
 // get drop down list
@@ -153,9 +151,7 @@ $( document ).ready(function() {
     $('#droplist').hide();
        
     $("#eduoffice").change(function(){
-        
-
-        var subOffice = $('#eduoffice').serialize();
+              var subOffice = $('#eduoffice').serialize();
         $.post( "getbranches.php", subOffice, function( data, status ) {
             if(data){
                 $('#branch_sec').show();
@@ -168,23 +164,40 @@ $( document ).ready(function() {
 
 // submit Form
 
-$("#submit").click(function(event){
+$("#regform").on('submit', function(e){
             event.preventDefault();
-          var  formData = $("#regform").serialize() +'&submit='+ $('#submit').val();
-          /* console.log(formData); */
-          /* return false; */
-         
+        
           $.ajax({
-    type: 'POST',
-data : formData,
-    url: 'process.php',
-    success: function(data) {
-        var json = JSON.parse(data);
-        $('#emp_msg').html(json.empcheck).addClass('text-danger'); 
-        $('#ch_pw').html(json.pwcheck);
-    }
+            type: 'POST',
+            data : new FormData(this),
+            url: 'process.php',
+            dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+
+            beforeSend: function(){
+                $('#submit').attr("disabled","disabled");
+                $('#regform').css("opacity",".5");
+                console.log(FormData);
+            },
+            success: function(response){
+                $('.statusMsg').html('');
+                if(response.status == 1){
+                    $('#fupForm')[0].reset();
+                    $('.statusMsg').html('<p class="alert alert-success">'+response.message+'</p>');
+                }else{
+                    $('.statusMsg').html('<p class="alert alert-danger">'+response.message+'</p>');
+                }
+                $('#fupForm').css("opacity","");
+                $(".submitBtn").removeAttr("disabled");
+            }
+        });
+
+
+    
 });
- });
+
 
 $("#first_name").focusin(function(event){
             event.preventDefault();
